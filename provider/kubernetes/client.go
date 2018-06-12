@@ -27,6 +27,7 @@ const (
 	kindServices  = "services"
 	kindEndpoints = "endpoints"
 	kindSecrets   = "secrets"
+	kindNodes     = "nodes"
 )
 
 type resourceEventHandler struct {
@@ -66,6 +67,7 @@ type Client interface {
 	GetService(namespace, name string) (*v1.Service, bool, error)
 	GetSecret(namespace, name string) (*v1.Secret, bool, error)
 	GetEndpoints(namespace, name string) (*v1.Endpoints, bool, error)
+	GetNode(name string) (*v1.Node, bool, error)
 }
 
 type clientImpl struct {
@@ -74,6 +76,7 @@ type clientImpl struct {
 	svcStores      map[string]cache.Store
 	epStores       map[string]cache.Store
 	secStores      map[string]cache.Store
+	nodStores      map[string]cache.Store
 	isNamespaceAll bool
 }
 
@@ -84,6 +87,7 @@ func newClientImpl(clientset *kubernetes.Clientset) Client {
 		svcStores: map[string]cache.Store{},
 		epStores:  map[string]cache.Store{},
 		secStores: map[string]cache.Store{},
+		nodStores: map[string]cache.Store{},
 	}
 }
 
@@ -162,6 +166,7 @@ func (c *clientImpl) WatchAll(namespaces Namespaces, labelSelector string, stopC
 		// situation here in the future.
 		informManager.extend(c.WatchObjects(ns, kindSecrets, &v1.Secret{}, c.secStores, eventCh), false)
 	}
+	informManager.extend(c.WatchObjects(api.NamespaceNone, kindNodes, &v1.Node{}, c.nodStores, eventCh), true)
 
 	var wg sync.WaitGroup
 	for _, informer := range informManager.informers {
@@ -275,6 +280,18 @@ func (c *clientImpl) GetSecret(namespace, name string) (*v1.Secret, bool, error)
 	}
 
 	return secret, exists, err
+}
+
+// GetNode returnes the named node 
+func (c *clientImpl) GetNode(name string) (*v1.Node, bool, error) {
+	var node *v1.Node
+
+	item, exists, err := c.nodStores[api.NamespaceNone].GetByKey(name)
+	if err == nil && item != nil {
+		node = item.(*v1.Node)
+	}
+
+	return node, exists, err
 }
 
 // lookupNamespace returns the lookup namespace key for the given namespace.

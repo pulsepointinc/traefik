@@ -1921,7 +1921,43 @@ func TestKubeAPIErrors(t *testing.T) {
 		},
 	}}
 
-	endpoints := []*v1.Endpoints{}
+	node1 := "node1"
+	nodes := []*v1.Node {
+		{
+			ObjectMeta: v1.ObjectMeta {
+				Name: node1,
+				Labels: map[string]string {
+					annotationKubernetesNodeWeight: "3",
+				},
+			},
+		},
+	}
+
+	endpoints := []*v1.Endpoints{
+		{
+			ObjectMeta: v1.ObjectMeta{
+				Name:      "service1",
+				UID:       "1",
+				Namespace: "testing",
+			},
+			Subsets: []v1.EndpointSubset{
+				{
+					Addresses: []v1.EndpointAddress{
+						{
+							IP: "10.10.1.1",
+							NodeName: &node1,
+						},
+					},
+					Ports: []v1.EndpointPort{
+						{
+							Port: 8080,
+						},
+					},
+				},
+			},
+		},
+	}
+
 	watchChan := make(chan interface{})
 	apiErr := errors.New("failed kube api call")
 
@@ -1929,14 +1965,24 @@ func TestKubeAPIErrors(t *testing.T) {
 		desc            string
 		apiServiceErr   error
 		apiEndpointsErr error
+		apiNodeErr      error
+		resultErr       error
 	}{
 		{
 			desc:          "failed service call",
 			apiServiceErr: apiErr,
+			resultErr:     apiErr,
 		},
 		{
 			desc:            "failed endpoints call",
 			apiEndpointsErr: apiErr,
+			resultErr:       apiErr,
+		},
+		{
+			desc:            "failed nodes call",
+			apiNodeErr:      apiErr,
+			//not fatal if we fail to get the node info from api
+			resultErr:       nil, 
 		},
 	}
 
@@ -1949,13 +1995,15 @@ func TestKubeAPIErrors(t *testing.T) {
 				ingresses:         ingresses,
 				services:          services,
 				endpoints:         endpoints,
+				nodes:             nodes,
 				watchChan:         watchChan,
 				apiServiceError:   tc.apiServiceErr,
 				apiEndpointsError: tc.apiEndpointsErr,
+				apiNodeError:      tc.apiNodeErr,
 			}
 
 			provider := Provider{}
-			if _, err := provider.loadIngresses(client); err != apiErr {
+			if _, err := provider.loadIngresses(client); err != tc.resultErr {
 				t.Errorf("Got error %v, wanted error %v", err, apiErr)
 			}
 		})
@@ -2261,6 +2309,7 @@ func TestBasicAuthInTemplate(t *testing.T) {
 			},
 		},
 	}
+	nodes := []*v1.Node{}
 
 	endpoints := []*v1.Endpoints{}
 	watchChan := make(chan interface{})
@@ -2269,6 +2318,7 @@ func TestBasicAuthInTemplate(t *testing.T) {
 		services:  services,
 		secrets:   secrets,
 		endpoints: endpoints,
+		nodes:     nodes,
 		watchChan: watchChan,
 	}
 	provider := Provider{}
@@ -2285,16 +2335,242 @@ func TestBasicAuthInTemplate(t *testing.T) {
 	}
 }
 
+func TestConfigurableNodeWeights(t *testing.T) {
+	node1 := "node1"
+	node2 := "node2"
+	node3 := "node3"
+	node4 := "node4"
+
+	nodes := []*v1.Node {
+		{
+			ObjectMeta: v1.ObjectMeta {
+				Name: node1,
+				Annotations: map[string]string {
+					annotationKubernetesNodeWeight: "3",
+				},
+			},
+		},
+		{
+			ObjectMeta: v1.ObjectMeta {
+				Name: node2,
+				Annotations: map[string]string {
+					annotationKubernetesNodeWeight: "5",
+				},
+			},
+		},
+		{
+			ObjectMeta: v1.ObjectMeta {
+				Name: node3,
+				Annotations: map[string]string {
+					annotationKubernetesNodeWeight: "   ",
+				},
+			},
+		},
+		{
+			ObjectMeta: v1.ObjectMeta {
+				Name: node4,
+				Annotations: map[string]string {
+					annotationKubernetesNodeWeight: "not and int",
+				},
+			},
+		},
+	}
+
+	ingresses := []*v1beta1.Ingress{{
+		ObjectMeta: v1.ObjectMeta{
+			Namespace: "testing",
+		},
+		Spec: v1beta1.IngressSpec{
+			Rules: []v1beta1.IngressRule{
+				{
+					Host: "foo",
+					IngressRuleValue: v1beta1.IngressRuleValue{
+						HTTP: &v1beta1.HTTPIngressRuleValue{
+							Paths: []v1beta1.HTTPIngressPath{
+								{
+									Path: "/bar",
+									Backend: v1beta1.IngressBackend{
+										ServiceName: "service1",
+										ServicePort: intstr.FromInt(80),
+									},
+								},
+							},
+						},
+					},
+				},
+			},
+		},
+	}}
+	services := []*v1.Service{
+		{
+			ObjectMeta: v1.ObjectMeta{
+				Name:      "service1",
+				UID:       "1",
+				Namespace: "testing",
+			},
+			Spec: v1.ServiceSpec{
+				ClusterIP: "10.0.0.1",
+				Ports: []v1.ServicePort{
+					{
+						Port: 80,
+					},
+				},
+			},
+		},
+	}
+
+	endpoints := []*v1.Endpoints{
+		{
+			ObjectMeta: v1.ObjectMeta{
+				Name:      "service1",
+				UID:       "1",
+				Namespace: "testing",
+			},
+			Subsets: []v1.EndpointSubset{
+				{
+					Addresses: []v1.EndpointAddress{
+						{
+							IP: "10.10.1.1",
+							NodeName: &node1,
+						},
+					},
+					Ports: []v1.EndpointPort{
+						{
+							Port: 8080,
+						},
+					},
+				},
+				{
+					Addresses: []v1.EndpointAddress{
+						{
+							IP: "10.10.2.1",
+							NodeName: &node2,
+						},
+					},
+					Ports: []v1.EndpointPort{
+						{
+							Port: 8080,
+						},
+					},
+				},
+				{
+					Addresses: []v1.EndpointAddress{
+						{
+							IP: "10.10.3.1",
+							NodeName: &node3,
+						},
+					},
+					Ports: []v1.EndpointPort{
+						{
+							Port: 8080,
+						},
+					},
+				},
+				{
+					Addresses: []v1.EndpointAddress{
+						{
+							IP: "10.10.4.1",
+							NodeName: &node4,
+						},
+					},
+					Ports: []v1.EndpointPort{
+						{
+							Port: 8080,
+						},
+					},
+				},
+				{
+					Addresses: []v1.EndpointAddress{
+						{
+							IP: "10.10.5.1",
+						},
+					},
+					Ports: []v1.EndpointPort{
+						{
+							Port: 8080,
+						},
+					},
+				},
+			},
+		},
+	}
+	watchChan := make(chan interface{})
+	client := clientMock{
+		ingresses: ingresses,
+		services:  services,
+		endpoints: endpoints,
+		nodes:     nodes,
+		watchChan: watchChan,
+	}
+	provider := Provider{}
+	actual, err := provider.loadIngresses(client)
+	if err != nil {
+		t.Fatalf("error %+v", err)
+	}
+
+	expected := &types.Configuration{
+		Backends: map[string]*types.Backend{
+			"foo/bar": {
+				Servers: map[string]types.Server{
+					"http://10.10.1.1:8080": {
+						URL:    "http://10.10.1.1:8080",
+						Weight: 3,
+					},
+					"http://10.10.2.1:8080": {
+						URL:    "http://10.10.2.1:8080",
+						Weight: 5,
+					},
+					"http://10.10.3.1:8080": {
+						URL:    "http://10.10.3.1:8080",
+						Weight: 1,
+					},
+					"http://10.10.4.1:8080": {
+						URL:    "http://10.10.4.1:8080",
+						Weight: 1,
+					},
+					"http://10.10.5.1:8080": {
+						URL:    "http://10.10.5.1:8080",
+						Weight: 1,
+					},
+				},
+				CircuitBreaker: nil,
+				LoadBalancer: &types.LoadBalancer{
+					Method: "wrr",
+				},
+			},
+		},
+		Frontends: map[string]*types.Frontend{
+			"foo/bar": {
+				Backend:        "foo/bar",
+				PassHostHeader: true,
+				Headers:        &types.Headers{},
+				Routes: map[string]types.Route{
+					"/bar": {
+						Rule: "PathPrefix:/bar",
+					},
+					"foo": {
+						Rule: "Host:foo",
+					},
+				},
+			},
+		},
+	}
+
+	assert.Equal(t, expected, actual)
+}
+
 type clientMock struct {
 	ingresses []*v1beta1.Ingress
 	services  []*v1.Service
 	secrets   []*v1.Secret
 	endpoints []*v1.Endpoints
+	nodes     []*v1.Node
 	watchChan chan interface{}
 
 	apiServiceError   error
 	apiSecretError    error
 	apiEndpointsError error
+	apiNodeError      error
 }
 
 func (c clientMock) GetIngresses() []*v1beta1.Ingress {
@@ -2336,6 +2612,19 @@ func (c clientMock) GetSecret(namespace, name string) (*v1.Secret, bool, error) 
 	for _, secret := range c.secrets {
 		if secret.Namespace == namespace && secret.Name == name {
 			return secret, true, nil
+		}
+	}
+	return nil, false, nil
+}
+
+func (c clientMock) GetNode(name string) (*v1.Node, bool, error) {
+	if c.apiNodeError != nil {
+		return nil, false, c.apiNodeError
+	}
+
+	for _, node := range c.nodes {
+		if node.Name == name {
+			return node, true, nil
 		}
 	}
 	return nil, false, nil

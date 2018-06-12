@@ -1,5 +1,14 @@
-FROM scratch
-COPY script/ca-certificates.crt /etc/ssl/certs/
-COPY dist/traefik /
+FROM alpine:3.6
+RUN apk --no-cache add ca-certificates libc6-compat 
+COPY "dist/*"  "/"
 EXPOSE 80
-ENTRYPOINT ["/traefik"]
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["traefik"]
+
+# Metadata
+LABEL org.label-schema.vendor="PulsePoint" \
+      org.label-schema.url="https://traefik.io" \
+      org.label-schema.name="Traefik" \
+      org.label-schema.description="A modern reverse-proxy" \
+      org.label-schema.version="v1.5.4_pp" \
+      org.label-schema.docker.schema-version="1.0"

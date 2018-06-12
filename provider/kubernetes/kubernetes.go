@@ -56,6 +56,7 @@ const (
 	annotationKubernetesPublicKey               = "ingress.kubernetes.io/public-key"
 	annotationKubernetesReferrerPolicy          = "ingress.kubernetes.io/referrer-policy"
 	annotationKubernetesIsDevelopment           = "ingress.kubernetes.io/is-development"
+	annotationKubernetesNodeWeight				= "ingress.kubernetes.io/node-weight"
 )
 
 const traefikDefaultRealm = "traefik"
@@ -338,9 +339,13 @@ func (p *Provider) loadIngresses(k8sClient Client) (*types.Configuration, error)
 									if address.TargetRef != nil && address.TargetRef.Name != "" {
 										name = address.TargetRef.Name
 									}
+									nodeWeight, nerr := getNodeWeight(address.NodeName, k8sClient)
+									if nerr != nil {
+										log.Errorf("Error getting weight of node %s: %v", *address.NodeName, nerr)
+									}
 									templateObjects.Backends[r.Host+pa.Path].Servers[name] = types.Server{
 										URL:    url,
-										Weight: 1,
+										Weight: nodeWeight,
 									}
 								}
 							}
@@ -508,4 +513,28 @@ func getFrontendRedirect(i *v1beta1.Ingress) *types.Redirect {
 		}
 	}
 	return nil
+}
+
+func getNodeWeight(nodeName *string, k8sClient Client) (int, error) {
+	weight := 1
+	if nodeName == nil || len(*nodeName) == 0 {
+		return weight, nil
+	}
+	node, ok, err := k8sClient.GetNode(*nodeName)
+	switch { 
+	case err != nil:
+		return weight, fmt.Errorf("failed to fetch node %s: %s", *nodeName, err)
+	case !ok:
+		return weight, fmt.Errorf("node %s not found", *nodeName)
+	case node == nil:
+		return weight, fmt.Errorf("data for node %s must not be nil", *nodeName)
+	case len(node.ObjectMeta.Annotations[annotationKubernetesNodeWeight]) == 0:
+		return weight, nil
+	default:
+		nweight, cerr := strconv.ParseInt(node.ObjectMeta.Annotations[annotationKubernetesNodeWeight], 10, 32); 
+		if cerr != nil {
+			return weight, fmt.Errorf("failed to convert annotation %s's value %s to weight for node %s: %s", annotationKubernetesNodeWeight, node.ObjectMeta.Annotations[annotationKubernetesNodeWeight], *nodeName, err)
+		}
+		return int(nweight), nil
+	}
 }
