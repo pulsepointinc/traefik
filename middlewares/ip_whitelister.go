@@ -33,7 +33,7 @@ func NewIPWhitelister(whitelistStrings []string) (*IPWhiteLister, error) {
 	whiteLister.whiteLister = ip
 
 	whiteLister.handler = negroni.HandlerFunc(whiteLister.handle)
-	log.Debugf("configured %u IP whitelists: %s", len(whitelistStrings), whitelistStrings)
+	log.Debugf("configured %v IP whitelists: %s", len(whitelistStrings), whitelistStrings)
 
 	return &whiteLister, nil
 }
@@ -54,7 +54,7 @@ func (wl *IPWhiteLister) handle(w http.ResponseWriter, r *http.Request, next htt
 	}
 
 	if allowed {
-		log.Debugf("source-IP %s matched whitelist %s - passing", ipAddress, wl.whiteLister)
+		log.Debugf("source-IP %s matched whitelist %v - passing", ipAddress, wl.whiteLister)
 		next.ServeHTTP(w, r)
 		return
 	}

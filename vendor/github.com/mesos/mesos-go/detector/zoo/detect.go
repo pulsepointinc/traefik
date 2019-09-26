@@ -81,8 +81,8 @@ func NewMasterDetector(zkurls string) (*MasterDetector, error) {
 
 	detector := &MasterDetector{
 		minDetectorCyclePeriod: defaultMinDetectorCyclePeriod,
-		done:   make(chan struct{}),
-		cancel: func() {},
+		done:                   make(chan struct{}),
+		cancel:                 func() {},
 	}
 
 	detector.bootstrapFunc = func() (err error) {

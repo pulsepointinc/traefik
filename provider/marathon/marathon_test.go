@@ -941,7 +941,7 @@ func TestMarathonHasStickinessLabel(t *testing.T) {
 			provider := &Provider{}
 			actual := provider.hasStickinessLabel(test.application)
 			if actual != test.expected {
-				t.Errorf("actual %q, expected %q", actual, test.expected)
+				t.Errorf("actual %t, expected %t", actual, test.expected)
 			}
 		})
 	}

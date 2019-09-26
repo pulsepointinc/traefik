@@ -148,9 +148,9 @@ ignored = ["github.com/sirupsen/logrus"]
   version = "0.1.0"
 
 [[constraint]]
-  branch = "containous-fork"
+  branch = "pp-samesite"
   name = "github.com/vulcand/oxy"
-  source = "https://github.com/containous/oxy.git"
+  source = "https://github.com/pulsepointinc/oxy"
 
 [[constraint]]
   name = "github.com/xenolf/lego"
@@ -161,7 +161,7 @@ ignored = ["github.com/sirupsen/logrus"]
   version = "1.5.2"
 
 [[constraint]]
-  name = "gopkg.in/fsnotify.v1"
+  name = "gopkg.in/fsnotify/fsnotify.v1"
   version = "1.4.2"
 
 [[constraint]]

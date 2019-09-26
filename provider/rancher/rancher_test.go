@@ -11,7 +11,7 @@ import (
 
 func TestProviderServiceFilter(t *testing.T) {
 	provider := &Provider{
-		Domain: "rancher.localhost",
+		Domain:                    "rancher.localhost",
 		EnableServiceHealthFilter: true,
 	}
 
@@ -564,7 +564,7 @@ func TestProviderGetLabel(t *testing.T) {
 
 			if test.expected != "" {
 				if err == nil || !strings.Contains(err.Error(), test.expected) {
-					t.Fatalf("expected an error with %q, got %v", test.expected, err)
+					t.Fatalf("expected an error with %v, got %v", test.expected, err)
 				}
 			} else {
 				assert.Equal(t, "bar", label)

@@ -21,7 +21,6 @@ import (
 	"sync"
 	"time"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/armon/go-proxyproto"
 	"github.com/containous/mux"
 	"github.com/containous/traefik/cluster"
@@ -39,6 +38,7 @@ import (
 	"github.com/containous/traefik/types"
 	"github.com/containous/traefik/whitelist"
 	"github.com/eapache/channels"
+	"github.com/sirupsen/logrus"
 	thoas_stats "github.com/thoas/stats"
 	"github.com/urfave/negroni"
 	"github.com/vulcand/oxy/connlimit"
@@ -1036,6 +1036,7 @@ func (s *Server) loadConfig(configurations types.Configurations, globalConfigura
 					var cookieName string
 					if stickiness := config.Backends[frontend.Backend].LoadBalancer.Stickiness; stickiness != nil {
 						cookieName = cookie.GetName(stickiness.CookieName, frontend.Backend)
+						// TODO: pass options here, but how?
 						sticky = roundrobin.NewStickySession(cookieName)
 					}
 

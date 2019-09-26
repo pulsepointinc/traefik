@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/cenk/backoff"
 	"github.com/containous/traefik/job"
 	"github.com/containous/traefik/log"
 	"github.com/containous/traefik/safe"
 	"github.com/containous/traefik/types"
+	"github.com/sirupsen/logrus"
 
 	rancher "github.com/rancher/go-rancher-metadata/metadata"
 )
@@ -31,7 +31,7 @@ func (p *Provider) metadataProvide(configurationChan chan<- types.ConfigMessage,
 		operation := func() error {
 			client, err := rancher.NewClientAndWait(metadataServiceURL)
 			if err != nil {
-				log.Errorln("Failed to create Rancher metadata service client: %s", err)
+				log.Errorln("Failed to create Rancher metadata service client: ", err)
 				return err
 			}
 
@@ -40,7 +40,7 @@ func (p *Provider) metadataProvide(configurationChan chan<- types.ConfigMessage,
 
 				stacks, err := client.GetStacks()
 				if err != nil {
-					log.Errorf("Failed to query Rancher metadata service: %s", err)
+					log.Errorf("Failed to query Rancher metadata service: %v", err)
 					return
 				}
 

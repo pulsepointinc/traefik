@@ -1,26 +1,26 @@
 package gominlog
 
 import (
+	"fmt"
+	"github.com/fatih/color"
+	"io"
 	"log"
 	"os"
-	"fmt"
-	"runtime"
-	"github.com/fatih/color"
 	"regexp"
+	"runtime"
 	"strings"
-	"io"
 )
 
 type Level int
 
 const (
-	Loff = Level(^uint(0) >> 1)
-	Lsevere = Level(1000)
-	Lerror = Level(900)
+	Loff     = Level(^uint(0) >> 1)
+	Lsevere  = Level(1000)
+	Lerror   = Level(900)
 	Lwarning = Level(800)
-	Linfo = Level(700)
-	Ldebug = Level(600)
-	Lall = Level(-Loff - 1)
+	Linfo    = Level(700)
+	Ldebug   = Level(600)
+	Lall     = Level(-Loff - 1)
 )
 
 type MinLog struct {
@@ -109,7 +109,7 @@ func (this *MinLog) logMessage(typeLog string, colorFg color.Attribute, colorBg 
 		msg += this.trace()
 		this.log.SetFlags(flags - log.Lshortfile)
 	}
-	text, ok := args[0].(string);
+	text, ok := args[0].(string)
 	if !ok {
 		panic("Firt argument should be a string")
 	}
@@ -172,7 +172,7 @@ func (this *MinLog) trace() string {
 	file, line := f.FileLine(pc[2])
 	if this.packageName == "" {
 		execFileSplit := strings.Split(os.Args[0], "/")
-		this.packageName = execFileSplit[len(execFileSplit) - 1]
+		this.packageName = execFileSplit[len(execFileSplit)-1]
 	}
 	regex, err := regexp.Compile(regexp.QuoteMeta(this.packageName) + "/(.*)")
 	if err != nil {
@@ -181,7 +181,7 @@ func (this *MinLog) trace() string {
 	subMatch := regex.FindStringSubmatch(file)
 	if len(subMatch) < 2 {
 		fileSplit := strings.Split(file, "/")
-		shortFile = fileSplit[len(fileSplit) - 1]
+		shortFile = fileSplit[len(fileSplit)-1]
 	} else {
 		shortFile = subMatch[1]
 	}

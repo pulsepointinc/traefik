@@ -263,10 +263,10 @@ var genericMap = map[string]interface{}{
 	"fail": func(msg string) (string, error) { return "", errors.New(msg) },
 
 	// Regex
-	"regexMatch": regexMatch,
-	"regexFindAll": regexFindAll,
-	"regexFind": regexFind,
-	"regexReplaceAll": regexReplaceAll,
+	"regexMatch":             regexMatch,
+	"regexFindAll":           regexFindAll,
+	"regexFind":              regexFind,
+	"regexReplaceAll":        regexReplaceAll,
 	"regexReplaceAllLiteral": regexReplaceAllLiteral,
-	"regexSplit": regexSplit,
+	"regexSplit":             regexSplit,
 }

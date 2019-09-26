@@ -345,7 +345,7 @@ func (p *CatalogProvider) nodeFilter(service string, node *api.ServiceEntry) boo
 func (p *CatalogProvider) isServiceEnabled(node *api.ServiceEntry) bool {
 	enable, err := strconv.ParseBool(p.getAttribute("enable", node.Service.Tags, strconv.FormatBool(p.ExposedByDefault)))
 	if err != nil {
-		log.Debugf("Invalid value for enable, set to %b", p.ExposedByDefault)
+		log.Debugf("Invalid value for enable, set to %v", p.ExposedByDefault)
 		return p.ExposedByDefault
 	}
 	return enable

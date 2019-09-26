@@ -2,8 +2,8 @@ package auroradnsclient
 
 import (
 	"encoding/json"
-	"github.com/Sirupsen/logrus"
 	"github.com/edeckers/auroradnsclient/zones"
+	"github.com/sirupsen/logrus"
 )
 
 // GetZones returns a list of all zones

@@ -7,7 +7,6 @@ import (
 	"io"
 	"os"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/docker/distribution/reference"
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
@@ -15,6 +14,7 @@ import (
 	"github.com/docker/docker/pkg/term"
 	"github.com/docker/docker/registry"
 	"github.com/docker/libcompose/docker/auth"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/net/context"
 )
 

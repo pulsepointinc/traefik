@@ -1022,7 +1022,7 @@
   version = "v0.1.0"
 
 [[projects]]
-  branch = "containous-fork"
+  branch = "pp-samesite"
   name = "github.com/vulcand/oxy"
   packages = [
     "cbreaker",
@@ -1033,8 +1033,8 @@
     "roundrobin",
     "utils"
   ]
-  revision = "af377749f48ff0ae9974b30ce12a816738b94558"
-  source = "https://github.com/containous/oxy.git"
+  revision = "e05d786c8677aa9f128ac4f36093f3b62ca06a77"
+  source = "https://github.com/pulsepointinc/oxy"
 
 [[projects]]
   name = "github.com/vulcand/predicate"
@@ -1238,10 +1238,10 @@
   version = "v1.5.2"
 
 [[projects]]
-  name = "gopkg.in/fsnotify.v1"
+  name = "gopkg.in/fsnotify/fsnotify.v1"
   packages = ["."]
-  revision = "629574ca2a5df945712d3079857300b5e4da0236"
-  version = "v1.4.2"
+  revision = "c2828203cd70a50dcccfb2761f8b1f8ceef9a8e9"
+  version = "v1.4.7"
 
 [[projects]]
   name = "gopkg.in/inf.v0"
@@ -1399,6 +1399,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "bda37c8b43334917a61fd0b22facf044a35a9b822f709603a8cb58464d738d12"
+  inputs-digest = "6ce304befefbe85faf92c005a3f7b1c709c93f0dae9322fd858e496931fc976a"
   solver-name = "gps-cdcl"
   solver-version = 1

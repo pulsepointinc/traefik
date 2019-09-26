@@ -216,7 +216,7 @@ func (p *Provider) splitGet(keys ...string) []string {
 		log.Debugf("Cannot get key %s %s, setting default empty", joinedKeys, err)
 		return []string{}
 	} else if keyPair == nil {
-		log.Debugf("Cannot get key %s, setting default %empty", joinedKeys)
+		log.Debugf("Cannot get key %s, setting default empty", joinedKeys)
 		return []string{}
 	}
 	return strings.Split(string(keyPair.Value), ",")
