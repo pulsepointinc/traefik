@@ -282,7 +282,7 @@ func (c *clientImpl) GetSecret(namespace, name string) (*v1.Secret, bool, error)
 	return secret, exists, err
 }
 
-// GetNode returnes the named node
+// GetNode returnes the named node 
 func (c *clientImpl) GetNode(name string) (*v1.Node, bool, error) {
 	var node *v1.Node
 

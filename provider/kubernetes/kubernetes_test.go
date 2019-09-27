@@ -1925,11 +1925,11 @@ func TestKubeAPIErrors(t *testing.T) {
 	}}
 
 	node1 := "node1"
-	nodes := []*v1.Node{
+	nodes := []*v1.Node {
 		{
-			ObjectMeta: v1.ObjectMeta{
+			ObjectMeta: v1.ObjectMeta {
 				Name: node1,
-				Labels: map[string]string{
+				Labels: map[string]string {
 					annotationKubernetesNodeWeight: "3",
 				},
 			},
@@ -1947,7 +1947,7 @@ func TestKubeAPIErrors(t *testing.T) {
 				{
 					Addresses: []v1.EndpointAddress{
 						{
-							IP:       "10.10.1.1",
+							IP: "10.10.1.1",
 							NodeName: &node1,
 						},
 					},
@@ -1982,10 +1982,10 @@ func TestKubeAPIErrors(t *testing.T) {
 			resultErr:       apiErr,
 		},
 		{
-			desc:       "failed nodes call",
-			apiNodeErr: apiErr,
+			desc:            "failed nodes call",
+			apiNodeErr:      apiErr,
 			//not fatal if we fail to get the node info from api
-			resultErr: nil,
+			resultErr:       nil, 
 		},
 	}
 
@@ -2344,35 +2344,35 @@ func TestConfigurableNodeWeights(t *testing.T) {
 	node3 := "node3"
 	node4 := "node4"
 
-	nodes := []*v1.Node{
+	nodes := []*v1.Node {
 		{
-			ObjectMeta: v1.ObjectMeta{
+			ObjectMeta: v1.ObjectMeta {
 				Name: node1,
-				Annotations: map[string]string{
+				Annotations: map[string]string {
 					annotationKubernetesNodeWeight: "3",
 				},
 			},
 		},
 		{
-			ObjectMeta: v1.ObjectMeta{
+			ObjectMeta: v1.ObjectMeta {
 				Name: node2,
-				Annotations: map[string]string{
+				Annotations: map[string]string {
 					annotationKubernetesNodeWeight: "5",
 				},
 			},
 		},
 		{
-			ObjectMeta: v1.ObjectMeta{
+			ObjectMeta: v1.ObjectMeta {
 				Name: node3,
-				Annotations: map[string]string{
+				Annotations: map[string]string {
 					annotationKubernetesNodeWeight: "   ",
 				},
 			},
 		},
 		{
-			ObjectMeta: v1.ObjectMeta{
+			ObjectMeta: v1.ObjectMeta {
 				Name: node4,
-				Annotations: map[string]string{
+				Annotations: map[string]string {
 					annotationKubernetesNodeWeight: "not and int",
 				},
 			},
@@ -2433,7 +2433,7 @@ func TestConfigurableNodeWeights(t *testing.T) {
 				{
 					Addresses: []v1.EndpointAddress{
 						{
-							IP:       "10.10.1.1",
+							IP: "10.10.1.1",
 							NodeName: &node1,
 						},
 					},
@@ -2446,7 +2446,7 @@ func TestConfigurableNodeWeights(t *testing.T) {
 				{
 					Addresses: []v1.EndpointAddress{
 						{
-							IP:       "10.10.2.1",
+							IP: "10.10.2.1",
 							NodeName: &node2,
 						},
 					},
@@ -2459,7 +2459,7 @@ func TestConfigurableNodeWeights(t *testing.T) {
 				{
 					Addresses: []v1.EndpointAddress{
 						{
-							IP:       "10.10.3.1",
+							IP: "10.10.3.1",
 							NodeName: &node3,
 						},
 					},
@@ -2472,7 +2472,7 @@ func TestConfigurableNodeWeights(t *testing.T) {
 				{
 					Addresses: []v1.EndpointAddress{
 						{
-							IP:       "10.10.4.1",
+							IP: "10.10.4.1",
 							NodeName: &node4,
 						},
 					},

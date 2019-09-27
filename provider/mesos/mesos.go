@@ -16,7 +16,6 @@ import (
 	"github.com/containous/traefik/safe"
 	"github.com/containous/traefik/types"
 	"github.com/mesos/mesos-go/detector"
-
 	// Register mesos zoo the detector
 	_ "github.com/mesos/mesos-go/detector/zoo"
 	"github.com/mesosphere/mesos-dns/detect"

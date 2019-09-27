@@ -1075,7 +1075,7 @@ func TestServerBuildRedirect(t *testing.T) {
 		errorExpected          bool
 	}{
 		{
-			desc:                   "Redirect endpoint http to https with HTTPS protocol",
+			desc: "Redirect endpoint http to https with HTTPS protocol",
 			redirectEntryPointName: "https",
 			globalConfiguration: configuration.GlobalConfiguration{
 				EntryPoints: configuration.EntryPoints{
@@ -1086,7 +1086,7 @@ func TestServerBuildRedirect(t *testing.T) {
 			expectedReplacement: "https://${1}:443${2}",
 		},
 		{
-			desc:                   "Redirect endpoint http to http02 with HTTP protocol",
+			desc: "Redirect endpoint http to http02 with HTTP protocol",
 			redirectEntryPointName: "http02",
 			globalConfiguration: configuration.GlobalConfiguration{
 				EntryPoints: configuration.EntryPoints{
@@ -1097,7 +1097,7 @@ func TestServerBuildRedirect(t *testing.T) {
 			expectedReplacement: "http://${1}:88${2}",
 		},
 		{
-			desc:                   "Redirect endpoint to non-existent entry point",
+			desc: "Redirect endpoint to non-existent entry point",
 			redirectEntryPointName: "foobar",
 			globalConfiguration: configuration.GlobalConfiguration{
 				EntryPoints: configuration.EntryPoints{
@@ -1108,7 +1108,7 @@ func TestServerBuildRedirect(t *testing.T) {
 			errorExpected: true,
 		},
 		{
-			desc:                   "Redirect endpoint to an entry point with a malformed address",
+			desc: "Redirect endpoint to an entry point with a malformed address",
 			redirectEntryPointName: "http02",
 			globalConfiguration: configuration.GlobalConfiguration{
 				EntryPoints: configuration.EntryPoints{
