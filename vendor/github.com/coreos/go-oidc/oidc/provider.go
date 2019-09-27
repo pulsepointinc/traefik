@@ -248,8 +248,8 @@ func (cfg ProviderConfig) toEncodableStruct() encodableProviderConfig {
 		RequestParameterSupported:                  cfg.RequestParameterSupported,
 		RequestURIParamaterSupported:               cfg.RequestURIParamaterSupported,
 		RequireRequestURIRegistration:              cfg.RequireRequestURIRegistration,
-		Policy:                                     uriToString(cfg.Policy),
-		TermsOfService:                             uriToString(cfg.TermsOfService),
+		Policy:         uriToString(cfg.Policy),
+		TermsOfService: uriToString(cfg.TermsOfService),
 	}
 }
 
@@ -291,8 +291,8 @@ func (e encodableProviderConfig) toStruct() (ProviderConfig, error) {
 		RequestParameterSupported:                  e.RequestParameterSupported,
 		RequestURIParamaterSupported:               e.RequestURIParamaterSupported,
 		RequireRequestURIRegistration:              e.RequireRequestURIRegistration,
-		Policy:                                     p.parseURI(e.Policy, "op_policy-uri"),
-		TermsOfService:                             p.parseURI(e.TermsOfService, "op_tos_uri"),
+		Policy:         p.parseURI(e.Policy, "op_policy-uri"),
+		TermsOfService: p.parseURI(e.TermsOfService, "op_tos_uri"),
 	}
 	if p.firstErr != nil {
 		return ProviderConfig{}, p.firstErr

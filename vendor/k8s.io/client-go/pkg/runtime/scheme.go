@@ -80,11 +80,11 @@ type FieldLabelConversionFunc func(label, value string) (internalLabel, internal
 // NewScheme creates a new Scheme. This scheme is pluggable by default.
 func NewScheme() *Scheme {
 	s := &Scheme{
-		gvkToType:                 map[unversioned.GroupVersionKind]reflect.Type{},
-		typeToGVK:                 map[reflect.Type][]unversioned.GroupVersionKind{},
-		unversionedTypes:          map[reflect.Type]unversioned.GroupVersionKind{},
-		unversionedKinds:          map[string]reflect.Type{},
-		cloner:                    conversion.NewCloner(),
+		gvkToType:        map[unversioned.GroupVersionKind]reflect.Type{},
+		typeToGVK:        map[reflect.Type][]unversioned.GroupVersionKind{},
+		unversionedTypes: map[reflect.Type]unversioned.GroupVersionKind{},
+		unversionedKinds: map[string]reflect.Type{},
+		cloner:           conversion.NewCloner(),
 		fieldLabelConversionFuncs: map[string]map[string]FieldLabelConversionFunc{},
 		defaulterFuncs:            map[reflect.Type]func(interface{}){},
 	}
