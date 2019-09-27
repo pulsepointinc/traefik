@@ -416,7 +416,7 @@ var _templatesKubernetesTmpl = []byte(`[backends]{{range $backendName, $backend 
       {{if $backend.LoadBalancer.Stickiness}}
       [backends."{{$backendName}}".loadbalancer.stickiness]
         cookieName = "{{$backend.LoadBalancer.Stickiness.CookieName}}"
-        chromeSameSite = "{{$backend.LoadBalancer.Stickiness.ChromeSameSite}}"
+        chromeSameSite = {{$backend.LoadBalancer.Stickiness.ChromeSameSite}}
       {{end}}
     {{range $serverName, $server := $backend.Servers}}
     [backends."{{$backendName}}".servers."{{$serverName}}"]
