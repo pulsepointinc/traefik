@@ -534,10 +534,11 @@ func getNodeWeight(nodeName *string, k8sClient Client) (int, error) {
 	case len(node.ObjectMeta.Annotations[annotationKubernetesNodeWeight]) == 0:
 		return weight, nil
 	default:
-		nweight, cerr := strconv.ParseInt(node.ObjectMeta.Annotations[annotationKubernetesNodeWeight], 10, 32);
+		nweight, cerr := strconv.ParseInt(node.ObjectMeta.Annotations[annotationKubernetesNodeWeight], 10, 32); 
 		if cerr != nil {
 			return weight, fmt.Errorf("failed to convert annotation %s's value %s to weight for node %s: %s", annotationKubernetesNodeWeight, node.ObjectMeta.Annotations[annotationKubernetesNodeWeight], *nodeName, err)
 		}
 		return int(nweight), nil
 	}
 }
+
