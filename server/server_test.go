@@ -685,6 +685,15 @@ func TestConfigureBackends(t *testing.T) {
 			wantStickiness: &types.Stickiness{},
 		},
 		{
+			desc: "valid load balancer method with chrome same site stickiness enabled",
+			lb: &types.LoadBalancer{
+				Method:     validMethod,
+				Stickiness: &types.Stickiness{ChromeSameSite: true},
+			},
+			wantMethod:     validMethod,
+			wantStickiness: &types.Stickiness{ChromeSameSite: true},
+		},
+		{
 			desc: "valid load balancer method with sticky disabled",
 			lb: &types.LoadBalancer{
 				Method:     validMethod,

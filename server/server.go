@@ -1036,8 +1036,7 @@ func (s *Server) loadConfig(configurations types.Configurations, globalConfigura
 					var cookieName string
 					if stickiness := config.Backends[frontend.Backend].LoadBalancer.Stickiness; stickiness != nil {
 						cookieName = cookie.GetName(stickiness.CookieName, frontend.Backend)
-						// TODO: pass options here, but how?
-						sticky = roundrobin.NewStickySession(cookieName)
+						sticky = roundrobin.NewStickySessionWithOptions(cookieName, roundrobin.CookieOptions{ChromeSameSite: true})
 					}
 
 					var lb http.Handler

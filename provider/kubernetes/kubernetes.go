@@ -298,6 +298,9 @@ func (p *Provider) loadIngresses(k8sClient Client) (*types.Configuration, error)
 					if cookieName := service.Annotations[types.LabelBackendLoadbalancerStickinessCookieName]; len(cookieName) > 0 {
 						templateObjects.Backends[r.Host+pa.Path].LoadBalancer.Stickiness.CookieName = cookieName
 					}
+					if service.Annotations[types.LabelBackendLoadbalancerStickinessChromeSameSite] == "true" {
+						templateObjects.Backends[r.Host+pa.Path].LoadBalancer.Stickiness.ChromeSameSite = true
+					}
 				}
 
 				protocol := "http"

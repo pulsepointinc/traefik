@@ -42,7 +42,8 @@ type LoadBalancer struct {
 
 // Stickiness holds sticky session configuration.
 type Stickiness struct {
-	CookieName string `json:"cookieName,omitempty"`
+	CookieName     string `json:"cookieName,omitempty"`
+	ChromeSameSite bool   `json:"chromeSameSite,omitempty"`
 }
 
 // CircuitBreaker holds circuit breaker configuration.

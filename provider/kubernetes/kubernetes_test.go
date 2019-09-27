@@ -849,8 +849,9 @@ func TestServiceAnnotations(t *testing.T) {
 				UID:       "2",
 				Namespace: "testing",
 				Annotations: map[string]string{
-					types.LabelTraefikBackendCircuitbreaker: "",
-					types.LabelBackendLoadbalancerSticky:    "true",
+					types.LabelTraefikBackendCircuitbreaker:                "",
+					types.LabelBackendLoadbalancerStickiness:               "true",
+					types.LabelBackendLoadbalancerStickinessChromeSameSite: "true",
 				},
 			},
 			Spec: v1.ServiceSpec{
@@ -980,7 +981,9 @@ func TestServiceAnnotations(t *testing.T) {
 				CircuitBreaker: nil,
 				LoadBalancer: &types.LoadBalancer{
 					Method: "wrr",
-					Sticky: true,
+					Stickiness: &types.Stickiness{
+						ChromeSameSite: true,
+					},
 				},
 			},
 		},
